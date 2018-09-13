@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+    - 9411:9411
+
+  default-backend:
+    image: default-backend:latest
+    build:
+      context: .
+      dockerfile: default-backend.df
+    environment:
+    - ZIPKIN=http://zipkin:9411/api/v2/spans
+    ports:
+    - 8081:8080
+    links:
+    - zipkin
+    depends_on:
+    - zipkin
+
+  simple-proxy:
+    image: simpleproxy
+    build:
+      context: .
+      dockerfile: simple-proxy.df
+    environment:
+    - ZIPKIN=http://zipkin:9411/api/v2/spans
+    - SIMPLEBACKEND=http://default-backend:8080
+    ports:
+    - 8080:8080
+    links:
+    - zipkin
+    - default-backend
+    depends_on:
+    - zipkin
+    - default-backend

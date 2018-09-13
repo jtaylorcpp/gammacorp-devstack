@@ -1,0 +1,11 @@
+FROM golang:alpine
+
+RUN apk add git 
+
+ADD ./src $GOPATH/src
+
+WORKDIR $GOPATH/src/github.com/jtaylorcpp/gammacorp-default-backend
+
+RUN go build -o /usr/bin/default-backend
+
+CMD /usr/bin/default-backend

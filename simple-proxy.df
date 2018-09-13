@@ -1,0 +1,13 @@
+FROM golang:alpine
+
+RUN apk add git 
+
+
+
+ADD ./src $GOPATH/src
+
+WORKDIR $GOPATH/src/github.com/jtaylorcpp/gammacorp-proxy/cmd/simple
+
+RUN go build -o /usr/bin/simpleproxy
+
+CMD /usr/bin/simpleproxy
